@@ -1,0 +1,93 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""Pagination metainformation"""
+type MetaType {
+  totalItems: Int!
+  itemCount: Int!
+  itemsPerPage: Int!
+  totalPages: Int!
+  currentPage: Int!
+}
+
+"""Message model"""
+type Message {
+  id: Int!
+  post: String!
+}
+
+type PaginatedMessage {
+  items: [Message]!
+  meta: MetaType!
+}
+
+"""User model"""
+type User {
+  id: Int!
+  email: String
+  username: String!
+  role: String!
+  messages: PaginatedMessage
+}
+
+type PaginatedUser {
+  items: [User]!
+  meta: MetaType!
+}
+
+"""Success login response data"""
+type LoginResult {
+  accessToken: String!
+}
+
+type Query {
+  profile: User!
+  users(page: Int = 1, limit: Int = 10): PaginatedUser!
+  postsByUserId(userId: Int!, page: Int = 1, limit: Int = 10): PaginatedMessage!
+  posts(page: Int = 1, limit: Int = 10): PaginatedMessage!
+  post(id: Int!): Message!
+}
+
+type Mutation {
+  login(loginDto: LoginInput!): LoginResult!
+  register(createUserDto: CreateUserDto!): User!
+  updateProfile(id: Int!, updateUserDto: UpdateUserInput!): User!
+  changeUserRole(id: Int!, changeUserRoleDto: ChangeUserRoleDto!): User!
+  deleteUser(id: Int!): User!
+  createPost(createMessageDto: CreateMessageDto!): Message!
+  updatePost(id: Int!, updateMessageDto: UpdateMessageInput!): Message!
+  deletePost(id: Int!): Message!
+}
+
+"""Data for authentication"""
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input CreateUserDto {
+  email: String!
+  username: String!
+  password: String!
+  facebookId: String
+}
+
+input UpdateUserInput {
+  email: String
+  username: String
+  password: String
+  facebookId: String
+}
+
+input ChangeUserRoleDto {
+  role: String!
+}
+
+input CreateMessageDto {
+  post: String!
+}
+
+input UpdateMessageInput {
+  post: String
+}
