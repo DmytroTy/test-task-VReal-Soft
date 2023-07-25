@@ -5,10 +5,11 @@ import {
   paginate,
   Pagination,
 } from 'nestjs-typeorm-paginate';
-import { Repository, DeleteResult } from 'typeorm';
+import { Repository } from 'typeorm';
+import { LoggerWinston } from '../logger/logger-winston.service';
+import { ID } from '../types/id.type';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
-import { LoggerWinston } from '../logger/logger-winston.service';
 import { Message } from './message.entity';
 
 @Injectable()
@@ -70,7 +71,8 @@ export class MessagesService {
     return this.messagesRepository.save({ id, ...updateMessageDto });
   }
 
-  async delete(id: number): Promise<DeleteResult> {
-    return this.messagesRepository.delete(id);
+  async delete(id: number): Promise<ID> {
+    await this.messagesRepository.delete(id);
+    return { id };
   }
 }

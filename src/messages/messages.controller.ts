@@ -23,8 +23,8 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { Pagination } from 'nestjs-typeorm-paginate';
-import { DeleteResult } from 'typeorm';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ID } from '../types/id.type';
 import { MessageAccessGuard } from './api/middleware/message-access.guard';
 import { PaginatedMessage, Message } from './message.entity';
 import { MessagesService } from './messages.service';
@@ -115,10 +115,11 @@ export class MessagesController {
   @ApiBearerAuth()
   @ApiOkResponse({
     description: 'The record of post has been successfully deleted.',
+    type: ID,
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized forbidden!' })
   @ApiForbiddenResponse({ description: 'Access forbidden!' })
-  delete(@Param('id') id: number): Promise<DeleteResult> {
+  delete(@Param('id') id: number): Promise<ID> {
     return this.messagesService.delete(id);
   }
 }

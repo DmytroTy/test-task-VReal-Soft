@@ -23,11 +23,11 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { Pagination } from 'nestjs-typeorm-paginate';
-import { UpdateResult } from 'typeorm';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { Role } from '../enums/role.enum';
+import { ID } from '../types/id.type';
 import { ChangeUserRoleDto } from './dto/change-user-role.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginatedUser, User } from './user.entity';
@@ -102,10 +102,11 @@ export class UsersController {
   @ApiBearerAuth()
   @ApiOkResponse({
     description: 'The user has been successfully deleted.',
+    type: ID,
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized forbidden!' })
   @ApiForbiddenResponse({ description: 'Access forbidden!' })
-  delete(@Param('id') id: number): Promise<UpdateResult> {
+  delete(@Param('id') id: number): Promise<ID> {
     return this.usersService.delete(id);
   }
 }

@@ -6,8 +6,9 @@ import {
   paginate,
   Pagination,
 } from 'nestjs-typeorm-paginate';
-import { Repository, UpdateResult } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Role } from '../enums/role.enum';
+import { ID } from '../types/id.type';
 import { ChangeUserRoleDto } from './dto/change-user-role.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -63,7 +64,8 @@ export class UsersService {
     return this.usersRepository.save({ ...changeUserRoleDto, id });
   }
 
-  async delete(id: number): Promise<UpdateResult> {
-    return this.usersRepository.softDelete(id);
+  async delete(id: number): Promise<ID> {
+    await this.usersRepository.softDelete(id);
+    return { id };
   }
 }

@@ -54,10 +54,10 @@ type Mutation {
   register(createUserDto: CreateUserDto!): User!
   updateProfile(id: Int!, updateUserDto: UpdateUserInput!): User!
   changeUserRole(id: Int!, changeUserRoleDto: ChangeUserRoleDto!): User!
-  deleteUser(id: Int!): User!
+  deleteUser(id: Int!): ID!
   createPost(createMessageDto: CreateMessageDto!): Message!
   updatePost(id: Int!, updateMessageDto: UpdateMessageInput!): Message!
-  deletePost(id: Int!): Message!
+  deletePost(id: Int!): ID!
 }
 
 """Data for authentication"""

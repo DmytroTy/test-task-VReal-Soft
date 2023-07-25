@@ -1,11 +1,11 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Pagination } from 'nestjs-typeorm-paginate';
-import { DeleteResult } from 'typeorm';
 import { MessageAccessGuard } from './api/middleware/message-access.guard';
 import { GqlJwtAuthGuard } from '../auth/guards/gql-jwt-auth.guard';
 import { PaginationArgs } from '../dto/pagination.args';
 import { CurrentUser } from '../decorators/current-user.decorator';
+import { ID } from '../types/id.type';
 import { PaginatedMessage, Message } from './message.entity';
 import { MessagesService } from './messages.service';
 import { CreateMessageDto } from './dto/create-message.dto';
@@ -54,10 +54,8 @@ export class MessagesResolver {
 
   @UseGuards(MessageAccessGuard)
   @UseGuards(GqlJwtAuthGuard)
-  @Mutation((returns) => Message)
-  deletePost(
-    @Args({ name: 'id', type: () => Int }) id: number,
-  ): Promise<DeleteResult> {
+  @Mutation((returns) => ID)
+  deletePost(@Args({ name: 'id', type: () => Int }) id: number): Promise<ID> {
     return this.messagesService.delete(id);
   }
 }
