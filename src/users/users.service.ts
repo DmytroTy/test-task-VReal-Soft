@@ -7,8 +7,8 @@ import {
   Pagination,
 } from 'nestjs-typeorm-paginate';
 import { Repository } from 'typeorm';
-import { Role } from '../enums/role.enum';
-import { ID } from '../types/id.type';
+import { Role } from '../common/enums/role.enum';
+import { ID } from '../common/types/id.type';
 import { ChangeUserRoleDto } from './dto/change-user-role.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';

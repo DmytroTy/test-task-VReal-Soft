@@ -1,12 +1,12 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { Paginated } from '../types/paginated.type';
+import { Paginated } from '../common/types/paginated.type';
 import { User } from '../users/user.entity';
 
-@ObjectType({ description: 'Message model' })
+@ObjectType({ description: 'Post model' })
 @Entity()
-export class Message {
+export class Post {
   @Field((type) => Int)
   @ApiProperty()
   @PrimaryGeneratedColumn()
@@ -15,11 +15,11 @@ export class Message {
   @Field()
   @ApiProperty()
   @Column('text')
-  post: string;
+  text: string;
 
-  @ManyToOne((type) => User, (user) => user.messages)
+  @ManyToOne((type) => User, (user) => user.posts)
   user: User;
 }
 
 @ObjectType()
-export class PaginatedMessage extends Paginated(Message) {}
+export class PaginatedPost extends Paginated(Post) {}

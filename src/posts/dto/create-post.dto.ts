@@ -3,9 +3,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
 @InputType()
-export class CreateMessageDto {
+export class CreatePostDto {
   @Field()
   @ApiProperty()
   @IsNotEmpty()
-  readonly post: string;
+  readonly text: string;
 }

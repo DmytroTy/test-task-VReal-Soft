@@ -11,14 +11,14 @@ type MetaType {
   currentPage: Int!
 }
 
-"""Message model"""
-type Message {
+"""Post model"""
+type Post {
   id: Int!
-  post: String!
+  text: String!
 }
 
-type PaginatedMessage {
-  items: [Message]!
+type PaginatedPost {
+  items: [Post]!
   meta: MetaType!
 }
 
@@ -28,7 +28,7 @@ type User {
   email: String
   username: String!
   role: String!
-  messages: PaginatedMessage
+  posts: PaginatedPost
 }
 
 type PaginatedUser {
@@ -44,9 +44,9 @@ type LoginResult {
 type Query {
   profile: User!
   users(page: Int = 1, limit: Int = 10): PaginatedUser!
-  postsByUserId(userId: Int!, page: Int = 1, limit: Int = 10): PaginatedMessage!
-  posts(page: Int = 1, limit: Int = 10): PaginatedMessage!
-  post(id: Int!): Message!
+  postsByUserId(userId: Int!, page: Int = 1, limit: Int = 10): PaginatedPost!
+  posts(page: Int = 1, limit: Int = 10): PaginatedPost!
+  post(id: Int!): Post!
 }
 
 type Mutation {
@@ -55,8 +55,8 @@ type Mutation {
   updateProfile(id: Int!, updateUserDto: UpdateUserInput!): User!
   changeUserRole(id: Int!, changeUserRoleDto: ChangeUserRoleDto!): User!
   deleteUser(id: Int!): ID!
-  createPost(createMessageDto: CreateMessageDto!): Message!
-  updatePost(id: Int!, updateMessageDto: UpdateMessageInput!): Message!
+  createPost(createPostDto: CreatePostDto!): Post!
+  updatePost(id: Int!, updatePostDto: UpdatePostInput!): Post!
   deletePost(id: Int!): ID!
 }
 
@@ -84,10 +84,10 @@ input ChangeUserRoleDto {
   role: String!
 }
 
-input CreateMessageDto {
-  post: String!
+input CreatePostDto {
+  text: String!
 }
 
-input UpdateMessageInput {
-  post: String
+input UpdatePostInput {
+  text: String
 }

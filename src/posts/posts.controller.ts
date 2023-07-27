@@ -1,16 +1,16 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
-  Request,
-  Query,
+  Controller,
   DefaultValuePipe,
-  ParseIntPipe,
-  UseGuards,
   Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post as PostHttp,
+  Query,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -24,38 +24,35 @@ import {
 } from '@nestjs/swagger';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { ID } from '../types/id.type';
-import { MessageAccessGuard } from './api/middleware/message-access.guard';
-import { PaginatedMessage, Message } from './message.entity';
-import { MessagesService } from './messages.service';
-import { CreateMessageDto } from './dto/create-message.dto';
-import { UpdateMessageDto } from './dto/update-message.dto';
+import { ID } from '../common/types/id.type';
+import { PostAccessGuard } from './api/middleware/post-access.guard';
+import { CreatePostDto } from './dto/create-post.dto';
+import { UpdatePostDto } from './dto/update-post.dto';
+import { PaginatedPost, Post } from './post.entity';
+import { PostsService } from './posts.service';
 
 @ApiTags('posts')
 @Controller('posts')
-export class MessagesController {
-  constructor(private readonly messagesService: MessagesService) {}
+export class PostsController {
+  constructor(private readonly postsService: PostsService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Post()
+  @PostHttp()
   @ApiBearerAuth()
   @ApiCreatedResponse({
     description: 'The record of new post has been successfully created.',
-    type: Message,
+    type: Post,
   })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized forbidden!' })
-  create(
-    @Body() createMessageDto: CreateMessageDto,
-    @Request() req,
-  ): Promise<Message> {
-    return this.messagesService.create(createMessageDto, req.user.userId);
+  create(@Body() createPostDto: CreatePostDto, @Request() req): Promise<Post> {
+    return this.postsService.create(createPostDto, req.user.userId);
   }
 
   @Get(':userId')
   @ApiOkResponse({
     description: 'Get posts by userId.',
-    type: PaginatedMessage,
+    type: PaginatedPost,
   })
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
@@ -63,9 +60,9 @@ export class MessagesController {
     @Param('userId') userId: number,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
-  ): Promise<Pagination<Message>> {
+  ): Promise<Pagination<Post>> {
     limit = limit > 100 ? 100 : limit;
-    return this.messagesService.findByUserId(userId, {
+    return this.postsService.findByUserId(userId, {
       page,
       limit,
       route: `/posts/${userId}`,
@@ -75,41 +72,41 @@ export class MessagesController {
   @Get()
   @ApiOkResponse({
     description: 'Get posts.',
-    type: PaginatedMessage,
+    type: PaginatedPost,
   })
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
   findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
-  ): Promise<Pagination<Message>> {
+  ): Promise<Pagination<Post>> {
     limit = limit > 100 ? 100 : limit;
-    return this.messagesService.findAll({
+    return this.postsService.findAll({
       page,
       limit,
       route: '/posts',
     });
   }
 
-  @UseGuards(MessageAccessGuard)
+  @UseGuards(PostAccessGuard)
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @ApiBearerAuth()
   @ApiOkResponse({
     description: 'The record of post has been successfully updated.',
-    type: Message,
+    type: Post,
   })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized forbidden!' })
   @ApiForbiddenResponse({ description: 'Access forbidden!' })
   update(
     @Param('id') id: number,
-    @Body() updateMessageDto: UpdateMessageDto,
-  ): Promise<Message> {
-    return this.messagesService.update(id, updateMessageDto);
+    @Body() updatePostDto: UpdatePostDto,
+  ): Promise<Post> {
+    return this.postsService.update(id, updatePostDto);
   }
 
-  @UseGuards(MessageAccessGuard)
+  @UseGuards(PostAccessGuard)
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   @ApiBearerAuth()
@@ -120,6 +117,6 @@ export class MessagesController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized forbidden!' })
   @ApiForbiddenResponse({ description: 'Access forbidden!' })
   delete(@Param('id') id: number): Promise<ID> {
-    return this.messagesService.delete(id);
+    return this.postsService.delete(id);
   }
 }

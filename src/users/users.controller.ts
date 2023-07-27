@@ -25,9 +25,9 @@ import {
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
-import { Roles } from '../decorators/roles.decorator';
-import { Role } from '../enums/role.enum';
-import { ID } from '../types/id.type';
+import { Roles } from '../common/decorators/roles.decorator';
+import { Role } from '../common/enums/role.enum';
+import { ID } from '../common/types/id.type';
 import { ChangeUserRoleDto } from './dto/change-user-role.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginatedUser, User } from './user.entity';
@@ -40,6 +40,16 @@ import { UsersService } from './users.service';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @Get('my-profile')
+  @ApiOkResponse({
+    description: 'Get profile.',
+    type: User,
+  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized forbidden!' })
+  async getProfile(@Request() req): Promise<User> {
+    return this.usersService.findOne(req.user.email);
+  }
 
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)

@@ -8,9 +8,9 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
 } from 'typeorm';
-import { Role } from '../enums/role.enum';
-import { Message, PaginatedMessage } from '../messages/message.entity';
-import { Paginated } from '../types/paginated.type';
+import { Role } from '../common/enums/role.enum';
+import { Post, PaginatedPost } from '../posts/post.entity';
+import { Paginated } from '../common/types/paginated.type';
 
 @ObjectType({ description: 'User model' })
 @Entity()
@@ -57,9 +57,9 @@ export class User {
   @Exclude()
   deletedAt?: Date;
 
-  @Field((type) => PaginatedMessage, { nullable: true })
-  @OneToMany((type) => Message, (message) => message.user)
-  messages?: Message[];
+  @Field((type) => PaginatedPost, { nullable: true })
+  @OneToMany((type) => Post, (post) => post.user)
+  posts?: Post[];
 }
 
 @ObjectType()

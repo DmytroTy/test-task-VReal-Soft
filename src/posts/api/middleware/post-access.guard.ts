@@ -2,16 +2,16 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Role } from '../../../enums/role.enum';
+import { Role } from '../../../common/enums/role.enum';
 import { LoggerWinston } from '../../../logger/logger-winston.service';
-import { Message } from '../../message.entity';
+import { Post } from '../../post.entity';
 
 @Injectable()
-export class MessageAccessGuard implements CanActivate {
+export class PostAccessGuard implements CanActivate {
   constructor(
     private readonly logger: LoggerWinston,
-    @InjectRepository(Message)
-    private messagesRepository: Repository<Message>,
+    @InjectRepository(Post)
+    private postsRepository: Repository<Post>,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -33,7 +33,7 @@ export class MessageAccessGuard implements CanActivate {
       return true;
     }
 
-    const message = await this.messagesRepository.findOne({
+    const post = await this.postsRepository.findOne({
       where: {
         id,
         user: {
@@ -42,13 +42,13 @@ export class MessageAccessGuard implements CanActivate {
       },
     });
 
-    if (!message) {
+    if (!post) {
       this.logger.warn(
-        `User error: user with id = ${userId} haven't access to message with id = ${id}`,
-        'MessageAccessGuard',
+        `User error: user with id = ${userId} haven't access to post with id = ${id}`,
+        'PostAccessGuard',
       );
     }
 
-    return !!message;
+    return !!post;
   }
 }
